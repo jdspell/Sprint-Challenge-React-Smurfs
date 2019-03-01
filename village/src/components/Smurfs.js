@@ -19,6 +19,7 @@ class Smurfs extends Component {
                   key={smurf.id}
                 />
                 <button onClick={e => this.props.deleteSmurf(e, smurf.id)}>Delete</button>
+                <button onClick={e => this.props.updateSmurfForm(e, smurf)}>Update</button>
               </div>
             );
           })}

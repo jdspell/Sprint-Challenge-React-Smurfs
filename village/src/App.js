@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Route } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import './App.css';
 import NavBar from './components/NavBar';
 import SmurfForm from './components/SmurfForm';
@@ -11,6 +11,8 @@ class App extends Component {
     super(props);
     this.state = {
       smurfs: [],
+      selectedSmurf: {},
+      update: false
     };
   }
   // add any needed code to ensure that the smurfs collection exists on state and it has data coming from the server
@@ -22,6 +24,7 @@ class App extends Component {
       .get('http://localhost:3333/smurfs')
       .then(response => {
         this.setState({
+          ...this.state,
           smurfs: response.data
         })
       })
@@ -55,6 +58,7 @@ class App extends Component {
       .delete(`http://localhost:3333/smurfs/${id}`)
       .then(response => {
         this.setState({
+          ...this.state,
           smurfs: response.data
         });
       })
@@ -63,11 +67,38 @@ class App extends Component {
       })
   }
 
+  updateSmurfForm = (e, smurf) => {
+    e.preventDefault();
+    this.props.history.push("/smurf-form");
+    this.setState({
+      ...this.state,
+      selectedSmurf: smurf,
+      update: true
+    });
+  }
+
+  handleSubmit = (e, smurf) => {
+    if(this.state.update){
+      updateSmurf(e, smurf);
+    } else {
+      addSmurf
+    }
+  }
+
   render() {
     return (
       <div className="App">
         <NavBar />
-        <Route path="/smurf-form" render={props => <SmurfForm addNewSmurf={this.addSmurf} /> } />
+        <Route 
+          path="/smurf-form" 
+          render={props => 
+            <SmurfForm 
+              addNewSmurf={this.addSmurf} 
+              selectedSmurf={this.state.selectedSmurf}
+              update={this.state.update}
+            /> 
+          } 
+        />
 
         <Route 
           exact path="/" 
@@ -75,6 +106,7 @@ class App extends Component {
             <Smurfs 
               smurfs={this.state.smurfs} 
               deleteSmurf={this.deleteSmurf}
+              updateSmurfForm={this.updateSmurfForm}
             /> 
           } 
         />
@@ -83,4 +115,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);
