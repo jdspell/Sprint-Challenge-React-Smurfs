@@ -34,17 +34,18 @@ class SmurfForm extends Component {
   };
 
   handleSubmit = (e, smurf) => {
-    if(this.state.update){
-      updateSmurf(e, smurf);
+    e.preventDefault();
+    if(this.props.update){
+      this.props.updateSmurf(e, this.state.smurf);
     } else {
-      addSmurf
+      this.addSmurf(e, this.state.smurf)
     }
   }
 
   render() {
     return (
       <div className="SmurfForm">
-        <form onSubmit={this.addSmurf}>
+        <form onSubmit={e => this.handleSubmit(e, this.state.smurf)}>
           <input
             onChange={this.handleInputChange}
             placeholder="name"
@@ -63,7 +64,7 @@ class SmurfForm extends Component {
             value={this.state.smurf.height}
             name="height"
           />
-          <button type="submit">Add to the village</button>
+          <button type="submit">{this.props.update ? "Update Smurf" : "Add to the village"}</button>
         </form>
         <Link to="/">Go to Smurf List</Link>
       </div>

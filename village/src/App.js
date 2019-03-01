@@ -77,12 +77,23 @@ class App extends Component {
     });
   }
 
-  handleSubmit = (e, smurf) => {
-    if(this.state.update){
-      updateSmurf(e, smurf);
-    } else {
-      addSmurf
-    }
+  updateSmurf = (e, updatedSmurf) => {
+    e.preventDefault();
+    axios
+    .put(`http://localhost:3333/smurfs/${updatedSmurf.id}`, updatedSmurf)
+    .then(response => {
+      console.log(response.data);
+      this.setState({
+        ...this.state,
+        smurfs: response.data,
+        selectedSmurf: {},
+        update: false
+      });
+    })
+    .catch(error => {
+      console.log("Unable to update smurf.");
+    })
+    this.props.history.push("/");
   }
 
   render() {
@@ -94,6 +105,7 @@ class App extends Component {
           render={props => 
             <SmurfForm 
               addNewSmurf={this.addSmurf} 
+              updateSmurf={this.updateSmurf}
               selectedSmurf={this.state.selectedSmurf}
               update={this.state.update}
             /> 
