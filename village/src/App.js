@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Route, NavLink} from 'react-router-dom';
 import './App.css';
 import SmurfForm from './components/SmurfForm';
 import Smurfs from './components/Smurfs';
@@ -38,7 +39,6 @@ class App extends Component {
     axios
     .post('http://localhost:3333/smurfs', newSmurf)
     .then(response => {
-      console.log(response.data_);
       // updates the previous state with the new smurf
       this.setState(prevState => ({
         ...prevState,
@@ -53,8 +53,12 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <SmurfForm addNewSmurf={this.addSmurf} />
-        <Smurfs smurfs={this.state.smurfs} />
+        <nav>
+          <NavLink to="/">Smurf List</NavLink>
+          <NavLink to="/smurf-form">Smurf Form</NavLink>
+        </nav>
+        <Route path="/smurf-form" render={props => <SmurfForm addNewSmurf={this.addSmurf} /> } />
+        <Route exact path="/" render={ props => <Smurfs smurfs={this.state.smurfs} /> } />
       </div>
     );
   }
