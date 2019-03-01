@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Route, NavLink} from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import './App.css';
+import NavBar from './components/NavBar';
 import SmurfForm from './components/SmurfForm';
 import Smurfs from './components/Smurfs';
 
@@ -35,7 +36,6 @@ class App extends Component {
       ...smurf,
       id: this.state.smurfs.length+1
     }
-
     axios
     .post('http://localhost:3333/smurfs', newSmurf)
     .then(response => {
@@ -50,15 +50,34 @@ class App extends Component {
     })
   }
 
+  deleteSmurf = (e, id) => {
+    axios
+      .delete(`http://localhost:3333/smurfs/${id}`)
+      .then(response => {
+        this.setState({
+          smurfs: response.data
+        });
+      })
+      .catch(error => {
+        console.log("Unable to delete the smurf.");
+      })
+  }
+
   render() {
     return (
       <div className="App">
-        <nav>
-          <NavLink to="/">Smurf List</NavLink>
-          <NavLink to="/smurf-form">Smurf Form</NavLink>
-        </nav>
+        <NavBar />
         <Route path="/smurf-form" render={props => <SmurfForm addNewSmurf={this.addSmurf} /> } />
-        <Route exact path="/" render={ props => <Smurfs smurfs={this.state.smurfs} /> } />
+
+        <Route 
+          exact path="/" 
+          render={ props => 
+            <Smurfs 
+              smurfs={this.state.smurfs} 
+              deleteSmurf={this.deleteSmurf}
+            /> 
+          } 
+        />
       </div>
     );
   }
