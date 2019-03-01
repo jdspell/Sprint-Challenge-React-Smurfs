@@ -28,14 +28,32 @@ class App extends Component {
       })
   }
 
-  // addSmurf = e => {
+  addSmurf = (smurf) => {
+    //creates new smurf from smurf passed in from the smurf form and gives it a unique id
+    const newSmurf = {
+      ...smurf,
+      id: this.state.smurfs.length+1
+    }
 
-  // }
+    axios
+    .post('http://localhost:3333/smurfs', newSmurf)
+    .then(response => {
+      console.log(response.data_);
+      // updates the previous state with the new smurf
+      this.setState(prevState => ({
+        ...prevState,
+        smurfs: response.data
+      }));
+    })
+    .catch(error => {
+      console.log("Unable to add new smurf to database.");
+    })
+  }
 
   render() {
     return (
       <div className="App">
-        <SmurfForm />
+        <SmurfForm addNewSmurf={this.addSmurf} />
         <Smurfs smurfs={this.state.smurfs} />
       </div>
     );
